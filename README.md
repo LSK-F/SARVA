@@ -78,7 +78,7 @@ O banco de dados principal da aplicação, que contém as regras de negócio do 
 -   O script se encontra na pasta `/DatabaseScripts` na raiz do repositório.
 
 **Passos para Execução:**
-1.  Inicie o SQL Server Management Studio (SSMS) ou a sua ferramenta de banco de dados preferida.
+1.  Inicie o SQL Server Management Studio (SSMS).
 2.  Conecte-se à instância do SQL Server que você especificou na connection string `connSARVA`.
 3.  Abra o arquivo de script da pasta `/DatabaseScripts`.
 4.  Execute o script. Isso irá criar o banco de dados `SARVA` com todas as tabelas e relacionamentos necessários.
