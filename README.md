@@ -68,6 +68,8 @@ O projeto utiliza o ASP.NET Core Identity para gerenciar usuários. Para criar a
 dotnet ef database update -c ApplicationDbContext
 ```
 
+---
+
 ### 3. Script do Banco de Dados do Modelo de Negócios
 
 O banco de dados principal da aplicação, que contém as regras de negócio do SARVA, precisa ser criado manualmente usando o script SQL fornecido.
