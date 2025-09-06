@@ -29,7 +29,7 @@ Antes de começar, garanta que você tenha os seguintes pré-requisitos instalad
 
 ---
 
-## ⚙️ Guia de Instalação e Configuração
+## Guia de Instalação e Configuração
 
 Siga os passos abaixo para configurar o ambiente de desenvolvimento.
 
