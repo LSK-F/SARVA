@@ -41,8 +41,8 @@ Ajuste as *connection strings* no arquivo `appsettings.json` para que apontem pa
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=SEU_SERVIDOR;Database=SARVA_Identity_DB;Trusted_Connection=True;TrustServerCertificate=True",
-    "connSARVA": "Server=SEU_SERVIDOR;Database=SARVA_Business_DB;Trusted_Connection=True;TrustServerCertificate=True"
+    "DefaultConnection": "Server=SEU_SERVIDOR;Database=aspnet-SARVA;Trusted_Connection=True;TrustServerCertificate=True",
+    "connSARVA": "Server=SEU_SERVIDOR;Database=SARVA;Trusted_Connection=True;TrustServerCertificate=True"
   },
   "Logging": {
     "LogLevel": {
