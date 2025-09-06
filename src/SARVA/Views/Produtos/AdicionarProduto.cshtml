@@ -1,0 +1,58 @@
+﻿@model SARVA.Models.Produto
+
+@{
+    //ViewData["Title"] = "Adicionar Produto";
+}
+
+<h1>Adicionar Produto</h1>
+
+<h4>Produto</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AdicionarProduto">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Ciclo.nome" class="control-label">Ciclo</label>
+                <input type="text" id="cicloNome" name="cicloNome" class="form-control"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="codigo" class="control-label">Código Produto</label>
+                <input asp-for="codigo" class="form-control" />
+                <span asp-validation-for="codigo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="hidden" asp-for="id_empresa" value="@ViewBag.IdEmpresa" />
+            </div>
+            <div class="form-group">
+                <label asp-for="nome" class="control-label">Nome Produto</label>
+                <input asp-for="nome" class="form-control" />
+                <span asp-validation-for="nome" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="valor" class="control-label">Valor</label>
+                <input asp-for="valor" class="form-control" />
+                <span asp-validation-for="valor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="pontos" class="control-label">Pontos</label>
+                <input asp-for="pontos" class="form-control" />
+                <span asp-validation-for="pontos" class="text-danger"></span>
+            </div>
+
+            </br>
+
+            <div class="form-group">
+                <input type="submit" value="Adicionar Produto" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="CatalogoProdutos">Voltar à Lista</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

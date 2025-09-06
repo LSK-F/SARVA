@@ -1,0 +1,45 @@
+﻿@model SARVA.Models.Produto
+
+@{
+    ViewData["Title"] = "Detalhes do Produto";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+
+        <div class="card shadow-sm">
+            <div class="card-header text-center">
+                <h3 class="mb-0">@Model.nome</h3>
+                <span class="text-muted">#@Model.codigo</span>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Valor</dt>
+                    <dd class="col-sm-8">@Model.valor.ToString("C")</dd>
+
+                    <dt class="col-sm-4">Status</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.flag)
+                        {
+                            <span class="badge bg-success">Habilitado</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Requisitado</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4">Empresa</dt>
+                    <dd class="col-sm-8">@Model.Empresa.razao_social</dd>
+
+                    <dt class="col-sm-4">Pontos</dt>
+                    <dd class="col-sm-8">@Model.pontos</dd>
+                </dl>
+            </div>
+            <div class="card-footer text-end">
+                <a href="javascript:history.back()" class="btn btn-secondary">Voltar</a>
+            </div>
+        </div>
+
+    </div>
+</div>

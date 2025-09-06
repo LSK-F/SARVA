@@ -1,0 +1,76 @@
+﻿@model IEnumerable<SARVA.Models.Ciclo>
+
+@{
+    ViewData["Title"] = "Gerenciar Ciclos";
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3">Gerenciar Ciclos</h1>
+    <div>
+        <a asp-controller="Ciclos" asp-action="AdicionarCiclo" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> Cadastrar Novo Ciclo
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        
+        @if (Model.Any())
+        {
+            <table class="table table-striped table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nome do Ciclo</th>
+                        <th>Empresa</th>
+                        <th>Data de Início</th>
+                        <th>Data de Encerramento</th>
+                        <th style="width: 120px;">Opções</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.nome</td>
+                            <td>@item.Empresa.razao_social</td>
+                            <td>@item.dataInicio.ToString()</td>
+                            <td>@item.dataFim.ToString()</td>
+                            <td>
+                                <a asp-controller="Ciclos" asp-action="EditarCiclo" asp-route-id="@item.id" class="btn btn-sm btn-outline-primary" title="Editar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <form asp-controller="Ciclos" asp-action="RemoverCiclo" asp-route-id="@item.id" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja remover o ciclo \'@item.nome\'?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Remover">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info text-center" role="alert">
+                Nenhum ciclo cadastrado ainda. Clique em "Cadastrar Novo Ciclo" para começar.
+            </div>
+        }
+    </div>
+</div>

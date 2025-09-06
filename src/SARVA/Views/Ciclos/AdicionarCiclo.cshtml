@@ -1,0 +1,77 @@
+﻿@model SARVA.Models.Ciclo
+
+@{
+    ViewData["Title"] = "Adicionar Ciclo";
+}
+
+<h1>Adicionar Ciclo</h1>
+
+<h4>Ciclo</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AdicionarCiclo">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Empresa.razao_social" class="control-label">Empresa</label>
+                <input type="text" id="razaoSocial" name="razaoSocial" class ="form-control"></input>
+                <span asp-validation-for="Empresa.razao_social" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="nome" class="control-label">Nome Ciclo</label>
+                <input asp-for="nome" class="form-control" />
+                <span asp-validation-for="nome" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="dataInicio" class="control-label">Data de Início</label>
+                <input asp-for="dataInicio" class="form-control" />
+                <span asp-validation-for="dataInicio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="dataFim" class="control-label">Data de Fim</label>
+                <input asp-for="dataFim" class="form-control" />
+                <span asp-validation-for="dataFim" class="text-danger"></span>
+            </div>
+            </br>
+            <div class="form-group">
+                <input type="submit" value="Adicionar Ciclo" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+</br>
+
+<div>
+    <a asp-action="LerDadosCiclo">Voltar</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+<script>
+    $(function () {
+        $("#razaoSocial").autocomplete({
+            // A função 'source' é responsável por buscar os dados
+            source: function (request, response) {
+                $.ajax({
+                    url: "/Empresas/GetSearchValue",
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        search: request.term
+                    },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.razaoSocial, value: item.razaoSocial }
+                        }));
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Erro ao buscar empresas.");
+                    }
+                });
+            },
+            minLength: 2 
+        });
+    });
+</script>

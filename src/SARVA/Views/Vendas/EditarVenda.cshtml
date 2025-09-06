@@ -1,0 +1,69 @@
+﻿@model SARVA.Models.Venda
+
+@{
+    ViewData["Title"] = "Editar Venda";
+}
+
+<link href="~/css/EditarVendastylecss.css" rel="stylesheet" />
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card p-4" style="background-color: rgba(255,255,255,0.9);">
+                <h2 class="text-center mb-4">Editar Venda Nº @Model.id</h2>
+                
+                <form asp-action="EditarVenda" method="post">
+                    
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Cliente.nome" class="form-label fw-bold">Nome do Cliente</label>
+                        <input type="hidden" asp-for="Cliente.nome" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="valor" class="form-label fw-bold">Valor da Venda</label>
+                        <input type="text" asp-for="valor" />
+                        <span asp-validation-for="valor" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="data_venda" class="form-label fw-bold">Data da Venda</label>
+                        <input asp-for="data_venda" class="form-control" type="date"/>
+                        <span asp-validation-for="data_venda" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="data_vencimento" class="form-label fw-bold">Data de Vencimento</label>
+                        <input asp-for="data_vencimento" class="form-control" type="date"/>
+                        <span asp-validation-for="data_vencimento" class="text-danger"></span>
+                    </div>
+                    
+                    <hr />
+
+                    <div class="mb-3">
+                        <label asp-for="data_pagamento" class="form-label fw-bold">Data de Pagamento</label>
+                        <input asp-for="data_pagamento" class="form-control" type="date" />
+                        <span asp-validation-for="data_pagamento" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="desconto" class="form-label fw-bold">Desconto</label>
+                        <input asp-for="desconto" class="form-control" />
+                        <span asp-validation-for="desconto" class="text-danger"></span>
+                    </div>
+
+                    <input type="hidden" asp-for="id" />
+                    <input type="hidden" asp-for="id_usuario" />
+                    <input type="hidden" asp-for="id_empresa" />
+                    <input type="hidden" asp-for="valorFinal" />
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a asp-action="LerDadosVenda" class="btn btn-secondary">Voltar</a>
+                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

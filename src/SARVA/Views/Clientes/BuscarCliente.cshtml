@@ -1,0 +1,57 @@
+﻿@model SARVA.Models.Cliente
+@{
+    ViewData["Title"] = "Buscar Cliente";
+}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<link href="~/css/BuscarCliente.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+<div class="titulo">
+    <br /><br />
+    <h1 style="text-align:center;color:white;">Buscar Cliente</h1>
+</div>
+
+<br /><br />
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form asp-controller="Empresas" asp-action="BuscarEmpresa" asp-route-requisitando="2" method="post">
+                <div class="form-group mb-3">
+                    <label asp-for="nome" class="form-label visually-hidden">Nome do Cliente</label>
+                    <input asp-for="nome" class="form-control" name="nomeCliente" id="nomeCliente" placeholder="Digite o nome do cliente para buscar..." />
+                    <span asp-validation-for="nome" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-center gap-3">
+                    <button type="submit" class="btn btn-light">Continuar</button>
+                    <a asp-controller="Vendas" asp-action="LerDadosVenda" class="btn btn-warning">Voltar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $("#nomeCliente").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/Clientes/GetSearchValue",
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        search: $("#nomeCliente").val()
+                    },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.nomeCliente, value: item.nomeCliente };
+                        }));
+                    }
+                });
+            }
+        });
+    });
+</script>

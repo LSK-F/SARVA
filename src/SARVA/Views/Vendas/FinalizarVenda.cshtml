@@ -1,0 +1,169 @@
+﻿@model SARVA.Models.FinalizarVendaViewModel
+
+@{
+    ViewData["Title"] = "Finalizar Venda";
+}
+
+<link href="~/css/FinalizarVendastyle.css" rel="stylesheet" asp-append-version="true" />
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Finalizar Venda</h2>
+        <form asp-action="RemoverVenda" asp-controller="Vendas" asp-route-id="@Model.Venda.id" method="post" style="display:inline">
+            <button type="submit" class="btn btn-outline-danger">
+                <i class="bi bi-x-circle"></i> Cancelar Venda
+            </button>
+        </form>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between">
+            <h4 class="mb-0">Cliente: @Model.Venda.Cliente.nome</h4>
+            <div>
+                @switch (Model.ScoreCliente)
+                {
+                    case 1: // Bom Pagador
+                        <span class="badge bg-success fs-6" title="Bom Pagador"><i class="bi bi-flag-fill"></i> Bom</span>
+                        break;
+                    case 2: // Mau Pagador
+                        <span class="badge bg-danger fs-6" title="Mau Pagador"><i class="bi bi-flag-fill"></i> Mau</span>
+                        break;
+                    default: // Neutro
+                        <span class="badge bg-secondary fs-6" title="Neutro"><i class="bi bi-flag-fill"></i> Neutro</span>
+                        break;
+                }
+            </div>
+        </div>
+        @if (Model.ScoreCliente == 2)
+        {
+            <div class="card-body bg-danger-subtle">
+                <p class="text-danger-emphasis mb-0">
+                    <i class="bi bi-exclamation-triangle-fill"></i> <strong>AVISO:</strong> O cliente selecionado está inadimplente! Sugerimos que a venda seja realizada <strong>à vista</strong>.
+                </p>
+            </div>
+        }
+    </div>
+
+    <h3 class="mt-4">Itens no Carrinho</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light text-center">
+                <tr>
+                    <th>Produto</th>
+                    <th>Valor Unitário</th>
+                    <th>Quantidade</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ItensVenda)
+                {
+                    <tr class="text-center">
+                        <td>@item.Produto.nome</td>
+                        <td>@item.valor.ToString("C")</td>
+                        <td>
+                            <div class="d-flex justify-content-center align-items-center gap-2">
+
+                                <form asp-action="RemoverItem_Venda" asp-controller="Item_Venda" method="post" style="display: inline;">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="codigoIV" value="@item.codigo_produto" />
+                                    <input type="hidden" name="idVenda" value="@Model.Venda.id" />
+                                    <input type="hidden" name="idCiclo" value="@item.id_ciclo_produto" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger fw-bold">-</button>
+                                </form>
+
+                                <span class="fs-5">@item.quantidade</span>
+
+                                <form asp-action="AdicionarItem_Venda" asp-controller="Item_Venda" method="post" style="display: inline;">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="codigoIV" value="@item.codigo_produto" />
+                                    <input type="hidden" name="idVenda" value="@Model.Venda.id" />
+                                    <input type="hidden" name="idCiclo" value="@item.id_ciclo_produto" />
+                                    <input type="hidden" name="jaTemIV" value="true" />
+                                    <button type="submit" class="btn btn-sm btn-outline-primary fw-bold">+</button>
+                                </form>
+    
+                            </div>
+                        </td>
+                        <td>@((item.valor * item.quantidade).ToString("C"))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row mt-4 justify-content-end">
+        <div class="col-md-6 col-lg-5">
+            <h4>Resumo da Venda</h4>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Subtotal
+                    <span>@Model.ValorTotal.ToString()</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Desconto Aplicado
+                    <span class="text-danger">- @Model.Venda.desconto.ToString()</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center fw-bold fs-5">
+                    Valor Total
+                    <span>@((Model.ValorTotal - Model.Venda.desconto).ToString())</span>
+                </li>
+            </ul>
+
+            <form asp-action="FinalizarVenda" asp-controller="Vendas" method="post" class="mt-3">
+                <input type="hidden" name="idVenda" value="@Model.Venda.id" />
+                <div class="input-group">
+                    <span class="input-group-text">R$</span>
+                    <input type="number" name="descontoVenda" class="form-control" placeholder="0,00" step="0.01" value="@(Model.Venda.desconto > 0 ? Model.Venda.desconto : "")" />
+                    <button type="submit" class="btn btn-info">Aplicar Desconto</button>
+                </div>
+            </form>
+
+            <form asp-action="FinalizarVendaPost" asp-controller="Vendas" method="post" class="d-grid mt-3">
+                <input type="hidden" name="idVenda" value="@Model.Venda.id" />
+                <input type="hidden" name="valorTotal" value="@Model.ValorTotal" />
+                <button type="submit" class="btn btn-success btn-lg"><i class="bi bi-check-circle-fill"></i> Finalizar Venda</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mt-5 bg-light-subtle">
+        <div class="card-body">
+            <h5 class="card-title">Simulador de Desconto</h5>
+            <div class="input-group">
+                <span class="input-group-text">R$</span>
+                <input type="number" id="descontoSimulado" class="form-control" placeholder="Valor do desconto" step="0.01" />
+                <button onclick="simularDesconto(@Model.ValorTotal.ToString(System.Globalization.CultureInfo.InvariantCulture))" class="btn btn-secondary" type="button">Simular</button>
+            </div>
+            <div class="mt-2">
+                <p class="mb-0"><strong>Valor Final:</strong> <span id="valorFinalSimulado"></span></p>
+                <p class="mb-0"><strong>Status da Margem:</strong> <span id="statusMargem" class="fw-bold"></span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function simularDesconto(valorTotal) {
+            const descontoInput = document.getElementById("descontoSimulado");
+            const statusMargemEl = document.getElementById("statusMargem");
+            const valorFinalEl = document.getElementById("valorFinalSimulado");
+
+            const desconto = parseFloat(descontoInput.value) || 0;
+            const valorFinal = valorTotal - desconto;
+            const margemMaxima = 0.3 * valorTotal;
+
+            valorFinalEl.textContent = valorFinal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+            if (desconto > margemMaxima) {
+                statusMargemEl.textContent = "FORA da margem de lucro!";
+                statusMargemEl.className = "fw-bold text-danger";
+            } else {
+                statusMargemEl.textContent = "DENTRO da margem de lucro.";
+                statusMargemEl.className = "fw-bold text-success";
+            }
+        }
+    </script>
+}

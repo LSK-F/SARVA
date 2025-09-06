@@ -1,0 +1,47 @@
+﻿@model SARVA.Models.Empresa
+
+@{
+    string tituloPagina = "Adicionar Empresa";
+    string textoBotao = "Adicionar Empresa";
+    string acaoVoltar = "LerDadosEmpresa";
+    string controllerVoltar = "Empresas";
+
+    if (User.IsInRole("Vendedor"))
+    {
+        tituloPagina = "Requisitar Empresa";
+        textoBotao = "Requisitar Empresa";
+        acaoVoltar = "Index";
+        controllerVoltar = "Home";
+    }
+
+    ViewData["Title"] = tituloPagina;
+}
+
+<h1>@tituloPagina</h1>
+
+<h4>Empresa</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AdicionarEmpresa">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="razao_social" class="control-label">Razão Social</label>
+                <input asp-for="razao_social" class="form-control" />
+                <span asp-validation-for="razao_social" class="text-danger"></span>
+            </div>
+            </br>
+            <div class="form-group">
+                <input type="submit" value="@textoBotao" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="@controllerVoltar" asp-action="@acaoVoltar">Voltar</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

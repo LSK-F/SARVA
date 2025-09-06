@@ -1,0 +1,77 @@
+﻿@model SARVA.Models.DetalhesPedidoViewModel
+
+@{
+    ViewData["Title"] = "Detalhes do Pedido";
+}
+
+<link href="~/css/DetalhesVendastyle.css" rel="stylesheet" />
+
+<div class="container mt-5">
+    <div class="text-center">
+        <h2>Detalhes do Pedido Nº @Model.Pedido.id</h2>
+        <p class="lead">Data do Pedido: @Model.Pedido.data_pedido.ToShortDateString()</p>
+        <hr />
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Itens do Pedido</h4>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover mb-0">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th>Nº Venda</th>
+                        <th>Produto</th>
+                        <th>Código</th>
+                        <th>Valor Unit.</th>
+                        <th>Quantidade</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    @foreach (var item in Model.Pedido.Item_Pedido.OrderBy(ip => ip.id_venda_IV))
+                    {
+                        <tr>
+                            <td>@item.id_venda_IV</td>
+                            <td>@item.Item_Venda.Produto.nome</td>
+                            <td>@item.Item_Venda.codigo_produto</td>
+                            <td>@item.valor.ToString("C")</td>
+                            <td>@item.Item_Venda.quantidade</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Resumo de Produtos</h4>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th>Produto</th>
+                        <th>Quantidade Total</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    @foreach (var produto in Model.ProdutosAgrupados)
+                    {
+                        <tr>
+                            <td>@produto.NomeProduto</td>
+                            <td>@produto.QuantidadeTotal</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="text-center my-4">
+        <a asp-action="LerDadosPedido" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Voltar para a Lista de Pedidos
+        </a>
+    </div>
+</div>

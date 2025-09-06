@@ -1,0 +1,55 @@
+﻿@model SARVA.Models.Pedido
+
+@{
+    ViewData["Title"] = "Editar Pedido";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h2 class="mb-0">Editar Pedido Nº @Model.id</h2>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditarPedido" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <input type="hidden" asp-for="id" />
+                        <input type="hidden" asp-for="id_usuario" />
+                        <input type="hidden" asp-for="id_empresa" />
+
+                        <div class="mb-3">
+                            <label asp-for="valor" class="form-label"></label>
+                            <input asp-for="valor" class="form-control" />
+                            <span asp-validation-for="valor" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="data_pedido" class="form-label">Data do Pedido</label>
+                            <input asp-for="data_pedido" class="form-control" type="date" />
+                            <span asp-validation-for="data_pedido" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="data_vencimento" class="form-label">Data de Vencimento</label>
+                            <input asp-for="data_vencimento" class="form-control" type="date" />
+                            <span asp-validation-for="data_vencimento" class="text-danger"></span>
+                        </div>
+                        
+                        <hr />
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a asp-action="LerDadosPedido" class="btn btn-secondary">Voltar</a>
+                            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

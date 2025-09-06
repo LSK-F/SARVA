@@ -1,0 +1,51 @@
+﻿@model SARVA.Models.Cliente
+
+@{
+    ViewData["Title"] = "Adicionar Cliente";
+}
+
+<link href="~/css/AdicionarClientestyle.css" rel="stylesheet" />
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card bg-dark text-white p-4 rounded-3">
+                <h2 class="text-center">Novo Cliente</h2>
+                <hr />
+
+                <form asp-action="AdicionarCliente" method="post">
+                    
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                    @* Os valores para estes campos ocultos agora são definidos no Controller. *@
+                    <input type="hidden" asp-for="id_usuario" />
+                    <input type="hidden" asp-for="scoreId" />
+
+                    <div class="mb-3">
+                        <label asp-for="nome" class="form-label">Nome do Cliente</label>
+                        <input asp-for="nome" class="form-control" />
+                        <span asp-validation-for="nome" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="email" class="form-label">Email para Contato</label>
+                        <input asp-for="email" class="form-control" type="email" />
+                        <span asp-validation-for="email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="aniversario" class="form-label">Data de Aniversário</label>
+                        <input asp-for="aniversario" class="form-control" type="date" />
+                        <span asp-validation-for="aniversario" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-light">Adicionar Novo Cliente</button>
+                        <a asp-action="LerDadosCliente" asp-controller="Clientes" class="btn btn-warning">Voltar</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

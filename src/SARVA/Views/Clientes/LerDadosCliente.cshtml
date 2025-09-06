@@ -1,0 +1,106 @@
+﻿@model IEnumerable<SARVA.Models.Cliente>
+
+@{
+    // Usar ViewData é uma prática comum no ASP.NET Core para passar dados simples para a View.
+    ViewData["Title"] = "Meus Clientes";
+}
+
+<link rel="stylesheet" href="~/css/LerDadosClientesstylecss.css" asp-append-version="true" />
+
+<h2>Meus Clientes</h2>
+
+<div class="filtro-container mb-4">
+    <form asp-controller="Clientes" asp-action="LerDadosCliente" method="get" class="d-flex flex-wrap align-items-end gap-3">
+        
+        <div class="form-group">
+            <label for="nomeCliente" class="form-label">Nome do Cliente:</label>
+            <input type="text" name="nomeCliente" id="nomeCliente" class="form-control" value="@Context.Request.Query["nomeCliente"]" />
+        </div>
+
+        <div class="form-group">
+            <label for="filtroNiver" class="form-label">Data de Aniversário:</label>
+            <input type="date" id="filtroNiver" name="filtroNiver" class="form-control" value="@Context.Request.Query["filtroNiver"]" />
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Filtrar</button>
+            <a asp-controller="Clientes" asp-action="LerDadosCliente" class="btn btn-secondary"><i class="bi bi-eraser-fill"></i> Limpar</a>
+        </div>
+    </form>
+</div>
+
+<table class="table table-bordered table-hover" style="font-size: 20px;">
+    <thead class="table-light">
+        <tr class="text-center">
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Data de Aniversário</th>
+            <th>Status</th>
+            <th>Opções</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="text-center">
+                <td>@item.nome</td>
+                <td>@item.email</td>
+                <td>@item.aniversario.ToString()</td>
+                <td>
+                    @switch (item.scoreId)
+                    {
+                        case 1: // Bom Pagador
+                            <i class="bi bi-flag-fill h3" style="color:green;" title="Bom Pagador"></i>
+                            break;
+                        case 2: // Mau Pagador
+                            <i class="bi bi-flag-fill h3" style="color:red;" title="Mau Pagador"></i>
+                            break;
+                        default: // Neutro (scoreId 3 ou outro)
+                            <i class="bi bi-flag-fill h3" style="color:grey;" title="Neutro"></i>
+                            break;
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-info" asp-controller="Clientes" asp-action="EditarCliente" asp-route-id="@item.id" title="Editar">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <form asp-controller="Clientes" asp-action="RemoverCliente" asp-route-id="@item.id" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger bi bi-trash-fill" onclick="return confirm('Tem certeza que deseja excluir o cliente \'@item.nome\'?');"></button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<br />
+
+<a asp-controller="Clientes" asp-action="AdicionarCliente" class="btn btn-success">
+    <i class="bi bi-plus-circle-fill"></i> Novo Cliente
+</a>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $("#nomeCliente").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '@Url.Action("GetSearchValue", "Clientes")',
+                        dataType: "json",
+                        type: "POST",
+                        data: {
+                            search: request.term
+                        },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.nomeCliente, value: item.nomeCliente };
+                            }));
+                        }
+                    });
+                },
+                minLength: 2
+            });
+        });
+    </script>
+}

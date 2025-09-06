@@ -1,0 +1,80 @@
+﻿@model SARVA.Models.Produto
+
+@{
+    ViewData["Title"] = "Editar Produto";
+    int codigo = Convert.ToInt32(ViewBag.Codigo);
+    string nome = ViewBag.Nome;
+    string nomeCiclo = ViewBag.Ciclo;
+}
+
+<link href="~/css/EditarProdutostyle.css" rel="stylesheet" asp-append-version="true" />
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <form asp-action="EditarProduto" asp-route-codigo="@codigo" method="post">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h2 class="mb-0">Editar Produto: @nome</h2>
+                    </div>
+                    <div class="card-body">
+                        
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <input type="hidden" asp-for="id_empresa" />
+                        <input type="hidden" asp-for="id_usuario" />
+
+                        <div class="mb-3">
+                            <label asp-for="nome" class="form-label">Nome do Produto</label>
+                            <input asp-for="nome" class="form-control" />
+                            <span asp-validation-for="nome" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="codigo" class="form-label">Código do Produto</label>
+                            <input asp-for="codigo" class="form-control" />
+                            <span asp-validation-for="nome" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="valor" class="form-label">Valor</label>
+                            <input asp-for="valor" class="form-control" type="number" step="0.01" />
+                            <span asp-validation-for="valor" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="cicloNome" class="form-label">Ciclo</label>
+                            <input type="text" id="cicloNome" name="cicloNome" class="form-control" value="@nomeCiclo" />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="pontos" class="form-label">Pontos</label>
+                            <input asp-for="pontos" class="form-control" type="number" />
+                            <span asp-validation-for="pontos" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="flag" class="form-label">Status</label>
+                            <select asp-for="flag" class="form-select">
+                                <option value="true">Ativo</option>
+                                <option value="false">Inativo</option>
+                            </select>
+                            <span asp-validation-for="flag" class="text-danger"></span>
+                        </div>
+                        
+                    </div>
+                    <div class="card-footer text-end gap-2 d-flex justify-content-end">
+                         <a asp-action="CatalogoProdutos" asp-controller="Produtos" asp-route-idVenda="-1" asp-route-idEmpresa="-1" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Voltar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Salvar Alterações
+                        </button>
+                    </div>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+</div>

@@ -1,0 +1,112 @@
+﻿@model IEnumerable<SARVA.Models.Pedido>
+
+@{
+    ViewData["Title"] = "Meus Pedidos";
+}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<link href="~/css/LerDadosVendasstyle.css" rel="stylesheet" />
+
+<div class="container mt-4">
+    <h2 class="text-center">Meus Pedidos</h2>
+    <hr />
+
+    <form asp-controller="Pedidos" asp-action="LerDadosPedido" method="get" class="p-3 border rounded bg-light">
+        <div class="row g-3 justify-content-center align-items-end">
+            <div class="col-md-3">
+                <label for="dataInicio" class="form-label">Data Início:</label>
+                <input type="date" name="dataInicio" id="dataInicio" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label for="dataFim" class="form-label">Data Fim:</label>
+                <input type="date" name="dataFim" id="dataFim" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label for="filtroEmpresa" class="form-label">Empresa:</label>
+                <input type="text" id="razaoSocial" name="filtroEmpresa" class="form-control" placeholder="Insira a razão social" />
+            </div>
+            <div class="col-md-auto">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <a asp-action="LerDadosPedido" class="btn btn-secondary ms-2">Limpar</a>
+            </div>
+        </div>
+    </form>
+
+    <div class="text-center my-4">
+        <a asp-controller="Empresas" asp-action="BuscarEmpresa" asp-route-requisitando="4" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Novo Pedido
+        </a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="table table-bordered table-hover" style="background-color: white;">
+            <thead class="table-light text-center">
+                <tr>
+                    <th>Nº Pedido</th>
+                    <th>Valor</th>
+                    <th>Empresa</th>
+                    <th>Data do Pedido</th>
+                    <th>Data de Vencimento</th>
+                    <th>Opções</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.id</td>
+                        <td>@item.valor.ToString()</td> <td>@item.Empresa?.razao_social</td> <td>@item.data_pedido.ToShortDateString()</td>
+                        <td>@item.data_vencimento.ToShortDateString()</td>
+                        <td>
+                            <a class="btn btn-info btn-sm" asp-action="DetalhesPedido" asp-route-id="@item.id" title="Detalhes">
+                                <i class="bi bi-three-dots"></i>
+                            </a>
+                            <a class="btn btn-info btn-sm" asp-action="EditarPedido" asp-route-id="@item.id" title="Editar">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <form asp-controller="Pedidos" asp-action="RemoverPedido" asp-route-id="@item.id" method="post" style="display:inline;">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-danger btn-sm bi bi-trash-fill" onclick="return confirm('Tem certeza que deseja excluir o Pedido Nº @item.id?');"></button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info text-center">
+            Nenhum pedido encontrado.
+        </div>
+    }
+</div>
+
+<script>
+    $(function () {
+        $("#razaoSocial").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/Empresas/GetSearchValue",
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        search: $("#razaoSocial").val()
+                    },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.razaoSocial, value: item.razaoSocial }
+                        }));
+                    },
+                    minLength: 2,
+                    error: function (xhr, status, error) {
+                        alert("Error");
+                    }
+                });
+            }
+        });
+    });
+</script>

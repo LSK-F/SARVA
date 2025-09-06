@@ -1,0 +1,68 @@
+﻿@model IEnumerable<SARVA.Models.Empresa>
+
+@{
+    ViewData["Title"] = "Gerenciar Empresas";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3">Gerenciar Empresas</h1>
+    <a asp-controller="Empresas" asp-action="AdicionarEmpresa" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i> Nova Empresa
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        
+        @if (Model.Any())
+        {
+            <table class="table table-striped table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Razão Social</th>
+                        <th>Status</th>
+                        <th>ID Usuário Associado</th>
+                        <th class="text-end" style="width: 120px;">Opções</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.razao_social</td>
+                            <td>
+                                @if (item.flag)
+                                {
+                                    <span class="badge bg-success">Habilitado</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Desabilitado</span>
+                                }
+                            </td>
+                            <td>@item.id_usuario</td>
+                            <td class="text-end">
+                                <a asp-controller="Empresas" asp-action="EditarEmpresa" asp-route-id="@item.id" class="btn btn-sm btn-outline-primary" title="Editar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+
+                                <form asp-controller="Empresas" asp-action="RemoverEmpresa" asp-route-id="@item.id" method="post" class="d-inline"
+                                      onsubmit="return confirm('Tem certeza que deseja remover a empresa \'@item.razao_social\'?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Remover">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info text-center" role="alert">
+                Nenhuma empresa cadastrada. Clique em "Nova Empresa" para começar.
+            </div>
+        }
+    </div>
+</div>

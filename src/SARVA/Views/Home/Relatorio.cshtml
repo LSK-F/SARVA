@@ -1,0 +1,87 @@
+﻿@model SARVA.Models.RelatorioViewModel
+@{
+    ViewData["Title"] = "Relatórios";
+}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+<h2 class="text-center">Relatório Mensal</h2>
+<br />
+<h3 class="text-center">Gerar Relatório por Empresa</h3>
+<br />
+<div class="text-center">
+    <form asp-action="Relatorio" asp-controller="Home" method="post">
+        @Html.AntiForgeryToken() <input type="text" asp-for="RazaoSocialInput" id="razaoSocial" placeholder="Ex.: Natura" />
+        <br />
+        <span asp-validation-for="RazaoSocialInput" class="text-danger"></span>
+        <br /><br />
+        <input class="btn btn-primary" type="submit" value="Gerar Relatório" id="btnGerarRel" />
+    </form>
+</div>
+
+<br />
+<br />
+
+@if (Model.GerouRelatorio)
+{
+    <h4 class="text-center">Relatório Empresa @Model.EmpresaNome</h4>
+    <br />
+    <table class="table table-bordered" style="border-color: #FFD6CC; color: black; background: white;">
+        <thead>
+            <tr>
+                <th>Vendas realizadas</th>
+                <th>Vendas pagas</th>
+                <th>Valor obtido</th>
+                <th>Valor a ser pago</th>
+                <th>Lucro obtido</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Model.TotalVendas</td>
+                <td>@Model.VendasPagas</td>
+                <td>@Model.ValorObtido.ToString("C")</td> <td>@Model.ValorASerPago.ToString("C")</td>
+                <td>@Model.Lucro.ToString("C")</td>
+            </tr>
+        </tbody>
+    </table>
+}
+
+<br />
+<hr />
+<br />
+
+@section Scripts {
+    <script>
+        $(function () {
+            $("#razaoSocial").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        // Usando Url.Action para gerar a URL dinamicamente
+                        url: '@Url.Action("GetSearchValue", "Empresas")',
+                        dataType: "json",
+                        type: "POST",
+                        // Enviando o token de segurança com a requisição AJAX
+                        headers: {
+                            "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        data: {
+                            search: request.term
+                        },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.razaoSocial, value: item.razaoSocial };
+                            }));
+                        },
+                        error: function (xhr, status, error) {
+                            alert("Erro ao buscar empresas.");
+                        }
+                    });
+                },
+                minLength: 2
+            });
+        });
+    </script>
+}

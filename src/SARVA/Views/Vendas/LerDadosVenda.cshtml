@@ -1,0 +1,110 @@
+﻿@model IEnumerable<SARVA.Models.Venda>
+@{
+    ViewData["Title"] = "Minhas Vendas";
+}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<link rel="stylesheet" href="~/css/LerDadosVendasstyle.css" type="text/css" />
+
+<div class="text-center">
+    <div class="content">
+        <h2 class="text-center">Minhas Vendas</h2>
+    </div>
+</div>
+<br />
+<br />
+
+<div class="container d-flex justify-content-center">
+    <form asp-controller="Vendas" asp-action="LerDadosVenda" method="post" class="row g-3 align-items-end p-3 border rounded bg-light">
+        <div class="col-md">
+            <label for="dataInicio" class="form-label">Data Início:</label>
+            <input type="date" name="dataInicio" id="dataInicio" class="form-control" />
+        </div>
+        <div class="col-md">
+            <label for="dataFim" class="form-label">Data Fim:</label>
+            <input type="date" name="dataFim" id="dataFim" class="form-control" />
+        </div>
+        <div class="col-md">
+            <label for="nomeCliente" class="form-label">Cliente:</label>
+            <input type="text" id="nomeCliente" name="filtroCliente" class="form-control" placeholder="Insira o nome do Cliente" />
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+            <a asp-controller="Vendas" asp-action="LerDadosVenda" class="btn btn-secondary ms-2">Limpar</a>
+        </div>
+    </form>
+</div>
+
+<br />
+<br />
+
+<div class="text-center">
+    <a asp-controller="Clientes" asp-action="BuscarCliente" class="btn btn-light">Nova Venda</a>
+</div>
+<br />
+
+<div class="table-responsive">
+    <table class="table table-bordered" style="border-color: #FFD6CC;color:black;background:white;">
+        <thead class="text-center">
+            <tr>
+                <th>Nº</th>
+                <th>Cliente</th>
+                <th>Empresa</th>
+                <th>Valor</th>
+                <th>Data Venda</th>
+                <th>Vencimento</th>
+                <th>Pagamento</th>
+                <th>Opções</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.id</td>
+                    <td>@item.Cliente.nome</td>
+                    <td>@item.Empresa.razao_social</td>
+                    <td>@item.valorFinal.ToString()</td>
+                    <td>@item.data_venda.ToShortDateString()</td>
+                    <td>@item.data_vencimento.ToShortDateString()</td>
+                    <td>@(item.data_pagamento?.ToShortDateString() ?? "Pendente")</td>
+                    <td>
+                        <a class="btn btn-info" asp-action="EditarVenda" asp-controller="Vendas" asp-route-idVenda="@item.id" title="Editar"><i class="bi bi-pencil-square"></i></a>
+                        <a class="btn btn-secondary" asp-action="DetalhesVenda" asp-controller="Vendas" asp-route-id="@item.id" title="Detalhes"><i class="bi bi-three-dots"></i></a>
+                        <form asp-controller="Vendas" asp-action="RemoverVenda" method="post">
+                            <input type="hidden" name="id" value="@item.id">
+                            <button type="submit" class="btn btn-danger"  onclick="return confirm('Tem certeza que deseja remover a Venda @item.id?')"><i class="bi bi-trash-fill"></i></button>
+                        </form>        
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<br />
+<br />
+
+<script>
+    $(function () {
+        $("#nomeCliente").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/Clientes/GetSearchValue",
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        search: $("#nomeCliente").val()
+                    },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.nomeCliente, value: item.nomeCliente };
+                        }));
+                    }
+                });
+            }
+        });
+    });
+</script>

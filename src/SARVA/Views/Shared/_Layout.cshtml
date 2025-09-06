@@ -1,0 +1,120 @@
+﻿@using Microsoft.AspNetCore.Http;
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SARVA</title>
+    
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SARVA.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/themes/smoothness/jquery-ui.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light border-bottom box-shadow mb-3" style="background-color:#EDFFFF;">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SARVA</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Página Inicial</a>
+                        </li>
+
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            // ÁREA VENDEDOR:
+                            if (User.IsInRole("Vendedor"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Home" asp-action="Relatorio" asp-route-id="@Context.Session.GetString("idSS")">Relatório Mensal</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Clientes" asp-action="LerDadosCliente" asp-route-id="@Context.Session.GetString("idSS")">Meus Clientes</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Vendas" asp-action="LerDadosVenda">Minhas Vendas</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Pedidos" asp-action="LerDadosPedido">Meus Pedidos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Produtos" asp-action="CatalogoProdutos" asp-route-idVenda="-1" asp-route-idEmpresa="-1">Catálogo de Produtos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Empresas" asp-action="AdicionarEmpresa">Requisitar Empresa</a>
+                                </li>
+                            }
+                            // ÁREA ADMIN:
+                            else if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Ciclos" asp-action="LerDadosCiclo" asp-route-idVenda="-1" asp-route-idEmpresa="-1">Gerir Ciclos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Produtos" asp-action="CatalogoProdutos" asp-route-idVenda="-1" asp-route-idEmpresa="-1">Gerir Produtos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Empresas" asp-action="LerDadosEmpresa" asp-route-idVenda="-1">Gerir Empresas</a>
+                                </li>
+                            }
+                        }
+                    </ul>
+
+                    <ul class="navbar-nav">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <span class="nav-link text-dark">Olá @User.Identity.Name!</span>
+                            </li>
+                            <li class="nav-item">
+                                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                    <button type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Registrar</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - SARVA - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

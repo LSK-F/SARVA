@@ -1,0 +1,122 @@
+﻿@model SARVA.Models.PedidoViewModel
+
+@{
+    ViewData["Title"] = "Finalizar Pedido";
+}
+
+<link href="~/css/FinalizarVendastyle.css" rel="stylesheet" />
+
+<div class="container mt-4">
+    <div class="text-center">
+        <h2>Finalizar Pedido Nº @Model.Pedido.id</h2>
+        <hr />
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Itens Detalhados do Pedido</h4>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover mb-0">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th>Nº Venda</th>
+                        <th>Cliente</th>
+                        <th>Produto</th>
+                        <th>Ciclo</th>
+                        <th>Quantidade</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    @foreach (var item in Model.ItensDetalhados)
+                    {
+                        <tr>
+                            <td>@item.VendaId</td>
+                            <td>@item.NomeCliente</td>
+                            <td>@item.NomeProduto</td>
+                            <td>@item.NomeCiclo</td>
+                            <td>@item.Quantidade</td>
+                            <td>@item.ValorCalculado.ToString("C")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Resumo de Produtos</h4>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th>Produto</th>
+                        <th>Quantidade Total</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    @foreach (var produto in Model.ProdutosAgrupados)
+                    {
+                        <tr>
+                            <td>@produto.NomeProduto</td>
+                            <td>@produto.QuantidadeTotal</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Resumo Financeiro</h4>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered mb-0">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th>Data do Pedido</th>
+                        <th>Data de Vencimento</th>
+                        <th>Valor Total</th>
+                        <th>Valor a Ser Pago (Com Desconto)</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center fs-5">
+                    <tr>
+                        <td>@Model.Pedido.data_pedido.ToShortDateString()</td>
+                        <td>@Model.Pedido.data_vencimento.ToShortDateString()</td>
+                        <td>@Model.ValorTotal.ToString("C")</td>
+                        <td class="fw-bold">@Model.ValorAPagar.ToString("C")</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="text-center my-4 d-flex justify-content-center gap-3">
+
+        <form asp-controller="Pedidos" asp-action="RemoverPedido" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Pedido.id" />
+            <input type="hidden" name="confirm" value="true" />
+            <button type="submit" class="btn btn-danger btn-lg" onclick="return confirm('Tem certeza que deseja cancelar o Pedido Nº @Model.Pedido.id?');">
+                <i class="bi bi-x-circle"></i> Cancelar Pedido
+            </button>
+        </form>
+
+        <form asp-controller="Pedidos" asp-action="FinalizarPedidoPost" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="idPedido" value="@Model.Pedido.id" />
+        
+            <input type="hidden" name="valorAPagar" value="@Model.ValorAPagar" />
+
+            <button type="submit" class="btn btn-success btn-lg">
+                <i class="bi bi-check-circle"></i> Finalizar Pedido
+            </button>
+        </form>
+    
+    </div>
+</div>

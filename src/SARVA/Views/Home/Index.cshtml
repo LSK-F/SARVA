@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Página Inicial";
+}
+
+<div class="p-5 mb-4 bg-light rounded-3">
+    <div class="container-fluid py-5 text-center">
+        <h1 class="display-5 fw-bold">Bem-vindo ao SARVA</h1>
+        <p class="fs-4 col-md-10 mx-auto">
+            A ferramenta completa para gerenciar suas vendas, clientes e pedidos de forma simples e eficiente.
+        </p>
+
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <a class="btn btn-primary btn-lg" asp-area="" asp-action="CatalogoProdutos" asp-controller="Produtos" asp-route-idVenda="-1" asp-route-idEmpresa="-1">Ir para o Catálogo</a>
+        }
+        else
+        {
+            <a class="btn btn-success btn-lg" asp-area="Identity" asp-page="/Account/Login">Acessar o Sistema</a>
+        }
+    </div>
+</div>
+
+<div class="row text-center">
+    <div class="col-md-4">
+        <h2>📊 Gerencie Vendas</h2>
+        <p>Registre e acompanhe todas as suas vendas em um único lugar!</p>
+    </div>
+    <div class="col-md-4">
+        <h2>👥 Controle Clientes</h2>
+        <p>Mantenha um cadastro completo dos seus clientes para um atendimento personalizado.</p>
+    </div>
+    <div class="col-md-4">
+        <h2>📦 Acesse o Catálogo de Produtos</h2>
+        <p>Saiba exatamente quais produtos estão disponíveis!</p>
+    </div>
+</div>

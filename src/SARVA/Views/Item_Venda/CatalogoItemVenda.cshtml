@@ -1,0 +1,89 @@
+﻿@model SARVA.Models.CatalogoPageViewModel
+
+@{
+    ViewData["Title"] = "Catálogo de Produtos para o Pedido";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center">Adicionar Produtos ao Pedido</h2>
+    <hr />
+
+    <form asp-action="CatalogoItemVenda" method="get" class="p-3 border rounded bg-light mb-4">
+        <input type="hidden" asp-for="IdPedido" />
+        <input type="hidden" asp-for="IdEmpresa" />
+
+        <div class="row g-3 justify-content-center align-items-end">
+            <div class="col-md-4">
+                <label asp-for="NomeCliente" class="form-label">Filtrar por Cliente:</label>
+                <input asp-for="NomeCliente" id="nomeCliente" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label asp-for="NumVenda" class="form-label">Filtrar por Nº Venda:</label>
+                <input asp-for="NumVenda" class="form-control" />
+            </div>
+            <div class="col-md-auto">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <a asp-action="CatalogoItemVenda" asp-route-idPedido="@Model.IdPedido" asp-route-idEmpresa="@Model.IdEmpresa" class="btn btn-secondary ms-2">Limpar</a>
+            </div>
+        </div>
+    </form>
+
+    <div class="row g-4">
+    @if (Model.ItensDoCatalogo.Any())
+    {
+        @foreach (var viewModel in Model.ItensDoCatalogo)
+        {
+            var item = viewModel.ItemVenda; 
+            <div class="col-md-4 col-lg-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-center">@item.Produto.nome</h5>
+                        <h6 class="card-subtitle mb-2 text-muted text-center">#@item.codigo_produto | Venda Nº @item.id_venda</h6>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Cliente:</strong> @item.Venda.Cliente.nome</li>
+                        <li class="list-group-item"><strong>Quantidade:</strong> @item.quantidade</li>
+                    </ul>
+                    <div class="card-footer text-center">
+                        @if (viewModel.EstaNoPedidoAtual)
+                        {
+                            <span class="btn btn-success disabled"><i class="bi bi-check-lg"></i> Adicionado</span>
+                        }
+                        else
+                        {
+                            <form asp-controller="Item_Pedido" asp-action="AdicionarItem_Pedido" method="post">
+    
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden" name="codigoIP" value="@item.codigo_produto" />
+                                <input type="hidden" name="idCiclo" value="@item.id_ciclo_produto" />
+                                <input type="hidden" name="idVenda" value="@item.id_venda" />
+                                <input type="hidden" name="id_Pedido" value="@Model.IdPedido" />
+
+                                <button type="submit" class="btn btn-primary bi bi-plus-circle">Adicionar</button>
+    
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="alert alert-info text-center">Nenhum item encontrado com os filtros aplicados.</div>
+        </div>
+    }
+    </div>
+
+    <div class="text-center my-4 d-flex justify-content-center gap-3">
+        <form asp-controller="Pedidos" asp-action="RemoverPedido" asp-route-id="@Model.IdPedido" asp-route-confirm="true" method="post" style="display:inline;">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja cancelar o Pedido Nº @Model.IdPedido?');">Cancelar Pedido</button>
+        </form>
+        <a asp-controller="Pedidos" asp-action="FinalizarPedido" asp-route-idPedido="@Model.IdPedido" class="btn btn-success">
+            Continuar e Finalizar Pedido
+        </a>
+    </div>
+</div>

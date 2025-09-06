@@ -1,0 +1,66 @@
+﻿@model SARVA.Models.Cliente
+
+@{
+    ViewData["Title"] = "Editar Cliente";
+    string statusTexto = "Neutro"; // Valor padrão
+    if (Model.scoreId == 1) { statusTexto = "Bom Pagador"; }
+    else if (Model.scoreId == 2) { statusTexto = "Mau Pagador"; }
+}
+
+<link href="~/css/EditarClientestyle.css" rel="stylesheet" asp-append-version="true" />
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <form asp-controller="Clientes" asp-action="EditarCliente" method="post">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h2 class="mb-0">Editar Cliente: @Model.nome</h2>
+                    </div>
+                    <div class="card-body">
+                        
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <input type="hidden" asp-for="id" />
+                        <input type="hidden" asp-for="id_usuario" />
+
+                        <div class="mb-3">
+                            <label asp-for="nome" class="form-label">Nome do Cliente</label>
+                            <input asp-for="nome" class="form-control" />
+                            <span asp-validation-for="nome" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="email" class="form-label">Email para Contato</label>
+                            <input asp-for="email" class="form-control" />
+                            <span asp-validation-for="email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="aniversario" class="form-label">Data de Aniversário</label>
+                            <input asp-for="aniversario" class="form-control" type="date"/>
+                            <span asp-validation-for="aniversario" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="score.descricao" class="form-label">Status</label>
+
+                            <input type="text" asp-for="score.descricao" value="@statusTexto" class="form-control" readonly />
+                            <span asp-validation-for="score.descricao" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="card-footer text-end gap-2 d-flex justify-content-end">
+                         <a asp-action="LerDadosCliente" asp-controller="Clientes" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Voltar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Salvar Alterações
+                        </button>
+                    </div>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+</div>

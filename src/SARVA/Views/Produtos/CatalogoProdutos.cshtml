@@ -1,0 +1,252 @@
+﻿@model IEnumerable<SARVA.Models.Produto>
+@{
+    ViewData["Title"] = "Catálogo de Produtos";
+    int idVenda = ViewBag.IdVenda;
+    int idEmpresa = ViewBag.IdEmpresa;
+
+    var codigosIV = (List<int>)ViewBag.CodigosIV;
+    var listaIdCiclo = (List<int>)ViewBag.IdCicloIV;
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<link href="~/css/catalogostyle.css" rel="stylesheet" />
+
+<body>
+    <div class="text-center"> <h2>Catálogo de Produtos</h2> </div>
+    <br />
+
+    <div class="filtro-container">
+        <form asp-controller="Produtos" asp-action="CatalogoProdutos" method="post" class="form-filtro-unificado">
+          
+            <input type="hidden" name="idVenda" value="@idVenda" />
+            <input type="hidden" name="idEmpresa" value="@idEmpresa" />
+
+            <div class="filtro-item">
+                <label for="filtroCodigo">Código</label>
+                <input type="text" name="filtroCodigo" id="filtroCodigo" placeholder="Insira o código" class="form-control" />
+            </div>
+
+            <div class="filtro-item">
+                <label for="filtroProduto">Produto</label>
+                <input type="text" id="filtroProduto" name="filtroProduto" placeholder="Insira o produto" class="form-control" />
+            </div>
+
+            <div class="filtro-item">
+                <label for="filtroCiclo">Ciclo</label>
+                <input type="text" id="filtroCiclo" name="filtroCiclo" placeholder="Insira o ciclo" class="form-control" />
+            </div>
+            
+            @if (idVenda == -1)
+            {
+                <div class="filtro-item">
+                    <label for="razaoSocial">Empresa</label>
+                    <input type="text" id="razaoSocial" name="razaoSocial" placeholder="Ex.: Natura" class="form-control" />
+                </div>
+            }
+
+            <div class="filtro-actions">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <a asp-controller="Produtos" asp-action="CatalogoProdutos" asp-route-idVenda="@idVenda" asp-route-idEmpresa="@idEmpresa" class="btn btn-secondary">Limpar Filtros</a>
+            </div>
+        </form>
+    </div>
+
+    <br />
+
+    <div class="text-center">
+
+        @if (User.IsInRole("Vendedor"))
+        {
+            <div>
+                <a asp-controller="Empresas" asp-action="BuscarEmpresa" asp-route-requisitando="1" class="btn btn-light">Requisitar Produto</a>
+            </div>
+            <br />
+
+            foreach (var item in Model.Where(p => p.flag == true && DateTime.Now >= p.Ciclo.dataInicio && DateTime.Now <= p.Ciclo.dataFim))
+            {
+                <div class="card" style="width: 15rem; height: 23rem;">
+                    <div class="card-body" style="margin: auto; font-weight: bold; font-size: 20px; text-align: center;">
+                        <h5 class="card-title">@item.nome</h5>
+                        #@item.codigo
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item text-center">
+                            <strong>Valor: </strong>
+                            <span>@item.valor.ToString("C")</span>
+                        </li>
+                        <li class="list-group-item text-center">
+                            <strong>Ciclo: </strong>
+                            <span>@item.Ciclo.nome</span>
+                        </li>
+                        <li class="list-group-item text-center">
+                            <strong>Empresa: </strong>
+                            <span>@item.Empresa.razao_social</span>
+                        </li>
+
+                        @if (idVenda != -1 && item.id_empresa == idEmpresa)
+                        {
+                            <li class="list-group-item text-center">
+                                @if (codigosIV.Contains(item.codigo) && listaIdCiclo.Contains(item.id_ciclo))
+                                {
+                                    <span class="text-success">Produto já adicionado!</span>
+                                }
+                                else
+                                {                
+                                    <form asp-controller="Item_Venda" asp-action="AdicionarItem_Venda" 
+
+                                       asp-route-codigoIV="@item.codigo"
+                                       asp-route-idCiclo="@item.id_ciclo"
+                                       asp-route-idEmpresa="@item.id_empresa"
+                                       asp-route-idVenda="@idVenda"
+                                       asp-route-jaTemIV="false"
+
+                                       class="btn btn-success" method="post" style="display:inline;">                       
+                                       
+                                       <button type="submit" class="btn btn-link";">Adicionar</button>
+
+                                    </form>
+                                }
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <br /><br />
+
+            @if (idVenda != -1)
+            {
+                <div class="d-flex justify-content-center gap-2">
+                    <a asp-controller="Vendas" asp-action="FinalizarVenda" asp-route-idVenda="@idVenda" class="btn btn-light">Continuar</a>
+                    <form asp-controller="Vendas" asp-action="RemoverVenda" asp-route-id="@idVenda" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger bi bi-fill" onclick="return confirm('Tem certeza que deseja cancelar esta venda?');">Cancelar</button>
+                    </form>
+                </div>
+            }
+        }
+        else
+        {
+            <div>
+                <a asp-controller="Empresas" asp-action="BuscarEmpresa" asp-route-requisitando="3" class="btn btn-primary">Novo Produto</a>
+            </div>
+            <br />
+
+            <h4 class="text-center">Produtos Requisitados</h4>
+            <br />
+            @foreach (var item in Model.Where(p => !p.flag))
+            {
+                 <div class="card" style="width: 15rem; height: 23rem">
+                    <div class="card-body" style="margin: auto; font-weight: bold; font-size: 20px; text-align: center;">
+                        <h5 class="card-title">@item.nome</h5>
+                        #@item.codigo
+                    </div>
+                    <ul class="list-group list-group-flush">
+                         <li class="list-group-item text-center">
+                            <strong>Valor: </strong>
+                            <span>@item.valor.ToString("C")</span>
+                        </li>
+                        <li class="list-group-item text-center">
+                            <strong>Ciclo: </strong>
+                            <span>@item.Ciclo.nome</span>
+                        </li>
+                        <li class="list-group-item text-center">
+                            <strong>Empresa: </strong>
+                            <span>@item.Empresa.razao_social</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-center gap-2">
+                            <a class="btn btn-outline-primary" asp-action="EditarProduto" asp-controller="Produtos" asp-route-codigo="@item.codigo"><i class="bi bi-pencil-square"></i></a>
+                            <a class="btn btn-outline-primary" asp-action="DetalhesProduto" asp-controller="Produtos" asp-route-codigo="@item.codigo"><i class="bi bi-three-dots"></i></a>
+                            <form asp-action="DeletarProduto" asp-controller="Produtos" asp-route-codigo="@item.codigo" asp-route-idCiclo="@item.id_ciclo" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Tem certeza que deseja remover este produto?');" title="Excluir">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            }
+
+            <hr class="my-4"/>
+
+            <h4 class="text-center">Produtos Habilitados</h4>
+            <br />
+            @foreach (var item in Model.Where(p => p.flag))
+            {
+                <div class="card" style="width: 15rem; height: 23rem">
+                    <div class="card-body" style="margin: auto; font-weight: bold; font-size: 20px; text-align: center;">
+                        <h5 class="card-title">@item.nome</h5>
+                        #@item.codigo
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item text-center">
+                            <strong>Valor: </strong>
+                            <span>@item.valor.ToString("C")</span>
+                        </li>
+                        <li class="list-group-item text-center">
+                            <strong>Ciclo: </strong>
+                            <span>@item.Ciclo.nome</span>
+                        </li>
+                        <li class="list-group-item text-center">
+                            <strong>Empresa: </strong>
+                            <span>@item.Empresa.razao_social</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-center gap-2">
+                            <a class="btn btn-outline-primary" asp-action="EditarProduto" asp-controller="Produtos" asp-route-codigo="@item.codigo"><i class="bi bi-pencil-square"></i></a>
+                            <a class="btn btn-outline-primary" asp-action="DetalhesProduto" asp-controller="Produtos" asp-route-codigo="@item.codigo"><i class="bi bi-three-dots"></i></a>
+                            <form asp-controller="Produtos" asp-action="DeletarProduto" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="codigo" value="@item.codigo" />
+        
+                                <input type="hidden" name="idCiclo" value="@item.id_ciclo" />
+
+                                <button type="submit" class="btn btn-outline-danger bi bi-trash-fill" onclick="return confirm('Tem certeza que deseja remover o Produto @item.nome?')"></button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            }
+        }
+    </div>
+    <br /><br />
+</body>
+
+<script>
+    $(function () {
+        $("#razaoSocial").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/Empresas/GetSearchValue",
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        search: $("#razaoSocial").val()
+                    },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.razaoSocial, value: item.razaoSocial }
+                        }));
+                    },
+                    minLength: 2
+                });
+            }
+        });
+    });
+</script>
