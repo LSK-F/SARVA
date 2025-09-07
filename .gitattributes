@@ -1,0 +1,5 @@
+# Ignorar bibliotecas e assets de terceiros nas estatísticas de linguagem
+wwwroot/* linguist-vendored
+
+# Tratar arquivos Razor como código C# para as estatísticas
+*.cshtml linguist-language=C#
