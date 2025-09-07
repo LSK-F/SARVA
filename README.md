@@ -1,12 +1,19 @@
 # SARVA - Serviço de Apoio a Revendedores Autônomos
+<p align="center" fontsize="20px">Support Service for Autonomous Resellers</p>
 
 <p align="left">
   Uma aplicação web desenvolvida com ASP.NET Core MVC para otimizar a gestão de revendedores autônomos.
 </p>
 
+<br>
+
+<p align="left">
+  A web application developed with ASP.NET Core MVC to optimize the management of autonomous resellers.
+</p>
+
 ---
 
-## Tecnologias Utilizadas
+## Technologies Used
 
 <div align="center">
   <img src="https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white" alt="C#">
@@ -18,31 +25,31 @@
 
 ---
 
-## Pré-requisitos
+## Prerequisites
 
-Antes de começar, garanta que você tenha os seguintes pré-requisitos instalados:
+Before you begin, ensure you have the following prerequisites installed:
 
 -   [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
--   [Visual Studio 2022](https://visualstudio.microsoft.com/) (ou outra IDE de sua preferência)
+-   [Visual Studio 2022](https://visualstudio.microsoft.com/) (or another IDE of your choice)
 -   [SQL Server](https://www.microsoft.com/pt-br/sql-server/sql-server-downloads)
--   [Ferramentas de Linha de Comando do EF Core](https://docs.microsoft.com/pt-br/ef/core/cli/dotnet)
+-   [EF Core Command-Line Tools](https://docs.microsoft.com/pt-br/ef/core/cli/dotnet)
 
 ---
 
-## Guia de Instalação e Configuração
+## Installation and Configuration Guide
 
-Siga os passos abaixo para configurar o ambiente de desenvolvimento.
+Follow the steps below to set up the development environment.
 
-### 1. Configuração do Banco de Dados (`appsettings.json`)
+### 1. Database Configuration (`appsettings.json`)
 
-Ajuste as *connection strings* no arquivo `appsettings.json` para que apontem para a sua instância do SQL Server.
+Adjust the connection strings in the `appsetting.json` file to point to your SQL Server instance.
 
-**Template do `appsettings.json`:**
+**Template for `appsettings.json`:**
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=SEU_SERVIDOR;Database=aspnet-SARVA;Trusted_Connection=True;TrustServerCertificate=True",
-    "connSARVA": "Server=SEU_SERVIDOR;Database=SARVA;Trusted_Connection=True;TrustServerCertificate=True"
+    "DefaultConnection": "Server=YOUR_SERVER;Database=aspnet-SARVA;Trusted_Connection=True;TrustServerCertificate=True",
+    "connSARVA": "Server=YOUR_SERVER;Database=SARVA;Trusted_Connection=True;TrustServerCertificate=True"
   },
   "Logging": {
     "LogLevel": {
@@ -54,15 +61,15 @@ Ajuste as *connection strings* no arquivo `appsettings.json` para que apontem pa
 }
 ```
 
-**Instruções:**
--   Substitua `SEU_SERVIDOR` pelo nome da sua instância do SQL Server (ex: `localhost`, `.\\SQLEXPRESS`).
--   Ajuste o nome dos bancos de dados (`Database`) se desejar.
+**Instructions:**
+-   Replace `YOUR_SERVER` with the name of your SQL Server instance (e.g., `localhost`, `.\\SQLEXPRESS`).
+-   Adjust the database names (`Database`) if you want.
 
 ---
 
-### 2. Aplicando Migrações do Identity
+### 2. Applying Identiy Migrations
 
-O projeto utiliza o ASP.NET Core Identity para gerenciar usuários. Para criar as tabelas no banco de dados, execute o seguinte comando no terminal, na pasta raiz do projeto:
+The project uses ASP.NET Core Identity to manage users. To create the tables in the database, run the following command in the terminal, in the project's root folder:
 
 ```bash
 dotnet ef database update -c ApplicationDbContext
@@ -70,15 +77,15 @@ dotnet ef database update -c ApplicationDbContext
 
 ---
 
-### 3. Script do Banco de Dados do Modelo de Negócios
+### 3. Business Model Database Script
 
-O banco de dados principal da aplicação, que contém as regras de negócio do SARVA, precisa ser criado manualmente usando o script SQL fornecido.
+The application's main database, which contains SARVA's business rules, needs to be created manually using the provided SQL script.
 
-**Localização do Arquivo:**
--   O script se encontra na pasta `/DatabaseScripts` na raiz do repositório.
+**File Location:**
+-   The script is located in the `/DatabaseScripts` folder in the repository's root.
 
-**Passos para Execução:**
-1.  Inicie o SQL Server Management Studio (SSMS).
-2.  Conecte-se à instância do SQL Server que você especificou na connection string `connSARVA`.
-3.  Abra o arquivo de script da pasta `/DatabaseScripts`.
-4.  Execute o script. Isso irá criar o banco de dados `SARVA` com todas as tabelas e relacionamentos necessários.
+**Execution Steps:**
+1.  Start SQL Server Management Studio (SSMS).
+2.  Connect to the SQL Server instance you specified in the `connSARVA` connection string.
+3.  Open the script file from the `/DatabaseScripts` folder.
+4.  Execute the script. This will create the `SARVA` database with all the necessary tables and relationships.
