@@ -59,7 +59,7 @@ Adjust the connection strings in the `appsetting.json` file to point to your SQL
 
 ---
 
-### 2. Applying Identiy Migrations
+### 2. Applying Identity Migrations
 
 The project uses ASP.NET Core Identity to manage users. To create the tables in the database, run the following command in the terminal, in the project's root folder:
 
