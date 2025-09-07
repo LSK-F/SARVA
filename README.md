@@ -1,13 +1,6 @@
 # SARVA - Serviço de Apoio a Revendedores Autônomos
-
 <p align="left">
-  Uma aplicação web desenvolvida com ASP.NET Core MVC para otimizar a gestão de revendedores autônomos.
-</p>
-
-<br>
-
-<p align="left">
-  A web application developed with ASP.NET Core MVC to optimize the management of autonomous resellers.
+  SARVA - Support Service for Autonomous Resellers | A web application developed with ASP.NET Core MVC to optimize the management of autonomous resellers.
 </p>
 
 ---
